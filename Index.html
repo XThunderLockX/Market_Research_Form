@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outil d'Évaluation Produit - Market Research</title>
+        <style>
+:root {
+    --bg-main: #121212;
+    --bg-card: #1e1e1e;
+    --bg-glass: rgba(255, 255, 255, 0.05);
+    --text-light: #f1f1f1;
+    --text-muted: #888;
+    --accent: #00f2fe;
+    --accent-2: #4facfe;
+    --danger: #ff4b2b;
+    --success: #56ab2f;
+    --warning: #ffe599;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-light);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.header {
+    background: linear-gradient(135deg, var(--accent-2) 0%, var(--accent) 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 0 30px var(--accent);
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.header p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+.main-content {
+    padding: 30px;
+}
+
+.product-info {
+    background: var(--bg-glass);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 4px solid var(--accent-2);
+    backdrop-filter: blur(10px);
+}
+
+.product-info input {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 2px solid #333;
+    color: var(--text-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.product-info input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-2);
+}
+
+.evaluation-section {
+    background: var(--bg-glass);
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.evaluation-section:hover {
+    transform: translateY(-2px);
+}
+
+.section-header {
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: white;
+    padding: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.section-content {
+    padding: 25px;
+}
+
+.criteria-row {
+    display: grid;
+    grid-template-columns: 200px 200px 1fr 80px;
+    gap: 20px;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #333;
+}
+
+.criteria-label {
+    font-weight: bold;
+    color: var(--text-light);
+}
+
+.dimension-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.options-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    background: #2b2b2b;
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.option:hover {
+    background: #3b3b3b;
+    border-color: var(--accent);
+}
+
+.option input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.2);
+}
+
+.option.selected {
+    background: var(--accent-2);
+    color: #000;
+    font-weight: bold;
+    border-color: var(--accent-2);
+}
+
+.score-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent);
+    text-align: center;
+    background: #2c2c2c;
+    border-radius: 10px;
+    padding: 10px;
+    min-width: 60px;
+}
+
+.total-score {
+    background: linear-gradient(135deg, var(--accent-2) 0%, var(--accent) 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    margin: 30px 0;
+    box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
+}
+
+.total-score h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.total-score .score {
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.decision {
+    padding: 20px;
+    border-radius: 15px;
+    margin: 20px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.decision.go {
+    background: #276c3b;
+    color: #c9ffd4;
+    border: 2px solid var(--success);
+}
+
+.decision.backlog {
+    background: #665c1e;
+    color: #fff0b3;
+    border: 2px solid var(--warning);
+}
+
+.decision.reject {
+    background: #6e1e1e;
+    color: #ffd6d6;
+    border: 2px solid var(--danger);
+}
+
+.actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: white;
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #5b5b5b, #3b3b3b);
+    color: white;
+    box-shadow: 0 5px 15px rgba(128, 128, 128, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success), #a8e6cf);
+    color: black;
+    box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger), #ff6a57);
+    color: white;
+    box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.history {
+    background: var(--bg-glass);
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 30px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+}
+
+.history h3 {
+    color: var(--text-light);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.history-item {
+    background: #232323;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--accent-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #333;
+    border-radius: 4px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@media (max-width: 768px) {
+    .criteria-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+}
+
+        </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Outil d'Évaluation Produit</h1>
+            <p>Analyse complète de marché pour vos produits e-commerce</p>
+        </div>
+
+        <div class="main-content">
+            <div class="product-info">
+                <input type="text" id="productName" placeholder="Nom du produit..." />
+                <input type="text" id="productDescription" placeholder="Description courte du produit..." />
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div id="evaluationSections"></div>
+
+            <div class="total-score">
+                <h2>Score Total</h2>
+                <div class="score" id="totalScore">0</div>
+                <div id="maxScore">/ 40</div>
+            </div>
+
+            <div class="decision" id="decision"></div>
+
+            <div class="actions">
+                <button class="btn btn-primary" onclick="resetForm()">🔄 Nouveau Produit</button>
+                <button class="btn btn-secondary" onclick="exportCSV()">📊 Exporter CSV</button>
+                <button class="btn btn-success" onclick="saveEvaluation()">💾 Sauvegarder</button>
+            </div>
+
+            <div class="history" id="historySection">
+                <h3>📈 Historique des Évaluations</h3>
+                <div id="historyList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const evaluationData = [
+            {
+                title: "1. IDÉE BRUTE",
+                criteria: [
+                    {
+                        label: "Hook",
+                        dimension: "Nature du hook",
+                        options: [
+                            {text: "Visuel choc", score: 3},
+                            {text: "Phrase choc", score: 3},
+                            {text: "Question", score: 2},
+                            {text: "Statistique", score: 1},
+                            {text: "Autre", score: 0}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "Promesse",
+                        dimension: "Bénéfice perçu",
+                        options: [
+                            {text: "Propreté", score: 2},
+                            {text: "Gain-temps", score: 2},
+                            {text: "Confort", score: 1},
+                            {text: "Esthétique", score: 1},
+                            {text: "Statut", score: 1},
+                            {text: "Autre", score: 0}
+                        ],
+                        maxScore: 2
+                    },
+                    {
+                        label: "Canal source",
+                        dimension: "Origine idée",
+                        options: [
+                            {text: "FB Ads TN", score: 2},
+                            {text: "IG TN", score: 2},
+                            {text: "TikTok TN", score: 1},
+                            {text: "Mag local", score: 1},
+                            {text: "Pinterest", score: 1},
+                            {text: "Autre", score: 0}
+                        ],
+                        maxScore: 2
+                    }
+                ]
+            },
+            {
+                title: "2. DESCRIPTION PRODUIT",
+                criteria: [
+                    {
+                        label: "Fonction technique",
+                        dimension: "Mécanisme produit",
+                        options: [
+                            {text: "Démo instantanée", score: 3},
+                            {text: "Simple usage", score: 2},
+                            {text: "Usage contextuel", score: 1},
+                            {text: "Complexe", score: 0}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "Problème résolu",
+                        dimension: "Univers",
+                        options: [
+                            {text: "Universel TN", score: 3},
+                            {text: "Fréquent", score: 2},
+                            {text: "Spécifique niche", score: 1},
+                            {text: "Rare", score: 0}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "Explication simple",
+                        dimension: "Clarté",
+                        options: [
+                            {text: "<10 mots", score: 2},
+                            {text: "10–20 mots", score: 1},
+                            {text: ">20 mots", score: 0}
+                        ],
+                        maxScore: 2
+                    }
+                ]
+            },
+            {
+                title: "3. VALIDATION PSYCHO",
+                criteria: [
+                    {
+                        label: "Emotion",
+                        dimension: "Type émotion activée",
+                        options: [
+                            {text: "Soulagement", score: 3},
+                            {text: "Fierté", score: 2},
+                            {text: "Curiosité", score: 1},
+                            {text: "Joie", score: 1},
+                            {text: "Peur", score: 2},
+                            {text: "Autre", score: 0}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "Statut social",
+                        dimension: "Positionnement perçu",
+                        options: [
+                            {text: "Premium", score: 3},
+                            {text: "Normal", score: 2},
+                            {text: "Basique", score: 1}
+                        ],
+                        maxScore: 3
+                    }
+                ]
+            },
+            {
+                title: "4. VALIDATION MARCHÉ TN",
+                criteria: [
+                    {
+                        label: "Google Trends",
+                        dimension: "Volume recherche",
+                        options: [
+                            {text: ">80", score: 3},
+                            {text: "60–80", score: 2},
+                            {text: "40–60", score: 1},
+                            {text: "<40", score: 0}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "Ads FB TN",
+                        dimension: "Preuves marché",
+                        options: [
+                            {text: "≥5 pubs", score: 3},
+                            {text: "2–4 pubs", score: 2},
+                            {text: "1 pub", score: 1},
+                            {text: "0 pub", score: 0}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "Concurrence locale",
+                        dimension: "Niveau saturation",
+                        options: [
+                            {text: "Faible", score: 3},
+                            {text: "Moyenne", score: 2},
+                            {text: "Forte", score: 1},
+                            {text: "Non trouvée", score: 1}
+                        ],
+                        maxScore: 3
+                    }
+                ]
+            },
+            {
+                title: "5. VALIDATION BUSINESS",
+                criteria: [
+                    {
+                        label: "Marge nette",
+                        dimension: "% profit unitaire",
+                        options: [
+                            {text: ">50%", score: 3},
+                            {text: "30–50%", score: 2},
+                            {text: "<30%", score: 0}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "Upsell potentiel",
+                        dimension: "Extension panier",
+                        options: [
+                            {text: "Produit complémentaire", score: 3},
+                            {text: "Bundle possible", score: 2},
+                            {text: "Aucun", score: 0}
+                        ],
+                        maxScore: 3
+                    }
+                ]
+            },
+            {
+                title: "6. SCALABILITÉ CRÉATIVE",
+                criteria: [
+                    {
+                        label: "Angles marketing",
+                        dimension: "Diversité communication",
+                        options: [
+                            {text: "≥5 angles", score: 3},
+                            {text: "3–4", score: 2},
+                            {text: "2", score: 1},
+                            {text: "1", score: 0}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "UGC faisable",
+                        dimension: "Production contenu",
+                        options: [
+                            {text: "Facile", score: 3},
+                            {text: "Moyen", score: 1},
+                            {text: "Difficile", score: 0}
+                        ],
+                        maxScore: 3
+                    }
+                ]
+            },
+            {
+                title: "7. COMPLIANCE & LOGISTIQUE",
+                criteria: [
+                    {
+                        label: "Douane",
+                        dimension: "Légalité import",
+                        options: [
+                            {text: "Autorisé", score: 3},
+                            {text: "Restriction légère", score: 1},
+                            {text: "Bloqué", score: 0}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "Stock Shipper",
+                        dimension: "Disponibilité",
+                        options: [
+                            {text: "<72h", score: 3},
+                            {text: "72–120h", score: 2},
+                            {text: ">120h", score: 0}
+                        ],
+                        maxScore: 3
+                    }
+                ]
+            },
+            {
+                title: "8. EFFET WOW",
+                criteria: [
+                    {
+                        label: "Réactions tests",
+                        dimension: "Viralité potentielle",
+                        options: [
+                            {text: ">90% réactif", score: 3},
+                            {text: "80–90%", score: 2},
+                            {text: "<80%", score: 0}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "Verbatim client",
+                        dimension: "Insight copywriting",
+                        options: [
+                            {text: '"Combien ?"', score: 3},
+                            {text: '"Je veux"', score: 2},
+                            {text: "Curieux", score: 1},
+                            {text: "Critique", score: 0}
+                        ],
+                        maxScore: 3
+                    }
+                ]
+            },
+            {
+                title: "9. SCORING SYNTHÉTIQUE",
+                criteria: [
+                    {
+                        label: "Score total",
+                        dimension: "Décision data-driven",
+                        options: [
+                            {text: ">40 GO", score: 3},
+                            {text: "30–40 Backlog", score: 2},
+                            {text: "<30 Reject", score: 1}
+                        ],
+                        maxScore: 3
+                    }
+                ]
+            },
+            {
+                title: "10. PRÉPARATION CREATIVE",
+                criteria: [
+                    {
+                        label: "Offre finale",
+                        dimension: "Stack offre",
+                        options: [
+                            {text: "Bundle", score: 3},
+                            {text: "Garantie", score: 2},
+                            {text: "Promo seule", score: 1}
+                        ],
+                        maxScore: 3
+                    },
+                    {
+                        label: "Scripts UGC",
+                        dimension: "Prêt à produire",
+                        options: [
+                            {text: "≥3 scripts", score: 3},
+                            {text: "2 scripts", score: 2},
+                            {text: "1 script", score: 1},
+                            {text: "0", score: 0}
+                        ],
+                        maxScore: 3
+                    }
+                ]
+            }
+        ];
+
+        let currentScores = {};
+        let evaluationHistory = [];
+
+        // Try to load from localStorage, fallback to empty array if it fails
+        try {
+            evaluationHistory = JSON.parse(localStorage.getItem('evaluationHistory') || '[]');
+        } catch (e) {
+            evaluationHistory = [];
+        }
+
+        function initializeApp() {
+            renderEvaluationSections();
+            updateTotalScore();
+            renderHistory();
+        }
+
+        function renderEvaluationSections() {
+            const container = document.getElementById('evaluationSections');
+            container.innerHTML = '';
+
+            evaluationData.forEach((section, sectionIndex) => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'evaluation-section';
+
+                sectionDiv.innerHTML = `
+                    <div class="section-header" onclick="toggleSection(${sectionIndex})">
+                        ${section.title}
+                    </div>
+                    <div class="section-content" id="section-${sectionIndex}" style="display: block;">
+                        ${section.criteria.map((criteria, criteriaIndex) => `
+                            <div class="criteria-row">
+                                <div class="criteria-label">${criteria.label}</div>
+                                <div class="dimension-label">${criteria.dimension}</div>
+                                <div class="options-group">
+                                    ${criteria.options.map((option, optionIndex) => `
+                                        <div class="option" onclick="selectOption(${sectionIndex}, ${criteriaIndex}, ${optionIndex}, ${option.score})">
+                                            <input type="checkbox" id="option-${sectionIndex}-${criteriaIndex}-${optionIndex}" />
+                                            <span>${option.text} (${option.score})</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="score-display" id="score-${sectionIndex}-${criteriaIndex}">0</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        function toggleSection(sectionIndex) {
+            const content = document.getElementById(`section-${sectionIndex}`);
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
+        }
+
+        function selectOption(sectionIndex, criteriaIndex, optionIndex, score) {
+            const sectionCriteria = evaluationData[sectionIndex].criteria[criteriaIndex];
+            const key = `${sectionIndex}-${criteriaIndex}`;
+
+            // Uncheck all options in this criteria
+            sectionCriteria.options.forEach((_, index) => {
+                const checkbox = document.getElementById(`option-${sectionIndex}-${criteriaIndex}-${index}`);
+                const optionDiv = checkbox.parentElement;
+                checkbox.checked = false;
+                optionDiv.classList.remove('selected');
+            });
+
+            // Check selected option
+            const selectedCheckbox = document.getElementById(`option-${sectionIndex}-${criteriaIndex}-${optionIndex}`);
+            const selectedOptionDiv = selectedCheckbox.parentElement;
+            selectedCheckbox.checked = true;
+            selectedOptionDiv.classList.add('selected');
+
+            // Update score
+            currentScores[key] = score;
+            document.getElementById(`score-${sectionIndex}-${criteriaIndex}`).textContent = score;
+
+            updateTotalScore();
+        }
+
+        function updateTotalScore() {
+            const total = Object.values(currentScores).reduce((sum, score) => sum + score, 0);
+            document.getElementById('totalScore').textContent = total;
+            
+            // Update progress bar
+            const progressFill = document.getElementById('progressFill');
+            const percentage = (total / 65) * 100;
+            progressFill.style.width = percentage + '%';
+
+            // Update decision
+            const decisionDiv = document.getElementById('decision');
+            if (total > 40) {
+                decisionDiv.textContent = '🚀 GO - Produit à lancer immédiatement!';
+                decisionDiv.className = 'decision go';
+            } else if (total >= 30) {
+                decisionDiv.textContent = '⏳ BACKLOG - Produit à étudier davantage';
+                decisionDiv.className = 'decision backlog';
+            } else {
+                decisionDiv.textContent = '❌ REJECT - Produit à écarter';
+                decisionDiv.className = 'decision reject';
+            }
+        }
+
+        function resetForm() {
+            currentScores = {};
+            document.getElementById('productName').value = '';
+            document.getElementById('productDescription').value = '';
+            
+            // Reset all checkboxes and scores
+            evaluationData.forEach((section, sectionIndex) => {
+                section.criteria.forEach((criteria, criteriaIndex) => {
+                    criteria.options.forEach((_, optionIndex) => {
+                        const checkbox = document.getElementById(`option-${sectionIndex}-${criteriaIndex}-${optionIndex}`);
+                        const optionDiv = checkbox.parentElement;
+                        checkbox.checked = false;
+                        optionDiv.classList.remove('selected');
+                    });
+                    document.getElementById(`score-${sectionIndex}-${criteriaIndex}`).textContent = '0';
+                });
+            });
+
+            updateTotalScore();
+        }
+
+        function saveEvaluation() {
+            const productName = document.getElementById('productName').value || 'Produit sans nom';
+            const productDescription = document.getElementById('productDescription').value || 'Aucune description';
+            const totalScore = Object.values(currentScores).reduce((sum, score) => sum + score, 0);
+            
+            const evaluation = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString('fr-FR'),
+                productName,
+                productDescription,
+                totalScore,
+                scores: {...currentScores},
+                decision: totalScore > 40 ? 'GO' : totalScore >= 30 ? 'BACKLOG' : 'REJECT'
+            };
+
+            evaluationHistory.unshift(evaluation);
+            localStorage.setItem('evaluationHistory', JSON.stringify(evaluationHistory));
+            renderHistory();
+            
+            alert('✅ Évaluation sauvegardée avec succès!');
+        }
+
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            
+            if (evaluationHistory.length === 0) {
+                historyList.innerHTML = '<p>Aucune évaluation sauvegardée.</p>';
+                return;
+            }
+
+            historyList.innerHTML = evaluationHistory.map(item => `
+                <div class="history-item">
+                    <div>
+                        <strong>${item.productName}</strong><br>
+                        <small>${item.date} - Score: ${item.totalScore}/65 - ${item.decision}</small>
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadEvaluation(${item.id})">Charger</button>
+                    <button class="btn btn-danger" onclick="deleteEvaluation(${item.id})">🗑 Supprimer</button>
+                </div>
+            `).join('');
+        }
+
+        function loadEvaluation(id) {
+            const evaluation = evaluationHistory.find(item => item.id === id);
+            if (!evaluation) return;
+
+            document.getElementById('productName').value = evaluation.productName;
+            document.getElementById('productDescription').value = evaluation.productDescription;
+            currentScores = {...evaluation.scores};
+
+            // Update UI
+            evaluationData.forEach((section, sectionIndex) => {
+                section.criteria.forEach((criteria, criteriaIndex) => {
+                    const key = `${sectionIndex}-${criteriaIndex}`;
+                    const score = currentScores[key] || 0;
+                    
+                    // Find and select the option with this score
+                    criteria.options.forEach((option, optionIndex) => {
+                        const checkbox = document.getElementById(`option-${sectionIndex}-${criteriaIndex}-${optionIndex}`);
+                        const optionDiv = checkbox.parentElement;
+                        
+                        if (option.score === score && score > 0) {
+                            checkbox.checked = true;
+                            optionDiv.classList.add('selected');
+                        } else {
+                            checkbox.checked = false;
+                            optionDiv.classList.remove('selected');
+                        }
+                    });
+                    
+                    document.getElementById(`score-${sectionIndex}-${criteriaIndex}`).textContent = score;
+                });
+            });
+
+            updateTotalScore();
+        }
+        function deleteEvaluation(id) {
+            const confirmed = confirm("❗ Voulez-vous vraiment supprimer cette évaluation ?");
+            if (!confirmed) return;
+
+            evaluationHistory = evaluationHistory.filter(item => item.id !== id);
+            localStorage.setItem('evaluationHistory', JSON.stringify(evaluationHistory));
+            renderHistory();
+        }
+
+
+        function exportCSV() {
+            if (evaluationHistory.length === 0) {
+                alert('Aucune évaluation à exporter!');
+                return;
+            }
+
+            let csv = 'Date,Nom Produit,Description,Score Total,Décision,';
+            
+            // Add all criteria headers
+            evaluationData.forEach(section => {
+                section.criteria.forEach(criteria => {
+                    csv += `${section.title} - ${criteria.label},`;
+                });
+            });
+            
+            csv += '\n';
+
+            // Add data rows
+            evaluationHistory.forEach(item => {
+                csv += `"${item.date}","${item.productName}","${item.productDescription}",${item.totalScore},"${item.decision}",`;
+                
+                // Add scores for each criteria
+                evaluationData.forEach((section, sectionIndex) => {
+                    section.criteria.forEach((criteria, criteriaIndex) => {
+                        const key = `${sectionIndex}-${criteriaIndex}`;
+                        const score = item.scores[key] || 0;
+                        csv += `${score},`;
+                    });
+                });
+                
+                csv += '\n';
+            });
+
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `evaluations_produits_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Initialize the app when page loads
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
